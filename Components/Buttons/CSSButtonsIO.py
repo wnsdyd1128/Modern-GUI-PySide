@@ -13,14 +13,13 @@ QPushButton#CSSButtonsIO {
   background-color: #fff;
   border: none;
   border-radius: 10px;
-  box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.1);
   cursor: pointer;
   outline: none;
 }
 
 QPushButton#CSSButtonsIO:hover {
   background-color: #23c483;
-  box-shadow: 0px 15px 20px rgba(46, 229, 157, 0.4);
+  
   color: #fff;
 }
 """
@@ -51,11 +50,18 @@ class CSSButtonsIO(QPushButton):
         self.animation_down.setEndValue(self.pos())
 
     def setup_shadow_effect(self):
+        # box-shadow: 0px 15px 20px rgba(46, 229, 157, 0.4);
         shadow = QGraphicsDropShadowEffect(self)
-        shadow.setBlurRadius(15)
-        shadow.setXOffset(0)
-        shadow.setYOffset(8)
-        shadow.setColor(QColor(0, 0, 0, 25))  # 10% opacity (25/255)
+        if self.is_hovered:
+            shadow.setXOffset(0)
+            shadow.setYOffset(8)
+            shadow.setBlurRadius(15)
+            shadow.setColor(QColor(0, 0, 0, 25))  # 10% opacity (25/255)
+        else:
+            shadow.setXOffset(0)
+            shadow.setYOffset(15)
+            shadow.setBlurRadius(20)
+            shadow.setColor(QColor(0, 0, 0, 100))  # 40% opacity (25/255)
         self.setGraphicsEffect(shadow)
 
     def enterEvent(self, event):
@@ -68,6 +74,7 @@ class CSSButtonsIO(QPushButton):
         self.animation_up.setStartValue(self.pos())  # Update start position dynamically
         self.animation_up.setEndValue(self.pos() + self.hover_offset)
         self.animation_up.start()
+        self.setup_shadow_effect()
         super().enterEvent(event)
 
     def leaveEvent(self, event):
@@ -76,6 +83,7 @@ class CSSButtonsIO(QPushButton):
         self.animation_down.setStartValue(self.pos())  # Update start position dynamically
         self.animation_down.setEndValue(self.original_position)
         self.animation_down.start()
+        self.setup_shadow_effect()
         super().leaveEvent(event)
 
     def showEvent(self, event):
@@ -99,3 +107,4 @@ class CSSButtonsIO(QPushButton):
                 self.animation_down.setStartValue(self.pos())
                 self.animation_down.setEndValue(self.original_position)
                 self.animation_down.start()
+        self.setup_shadow_effect()
